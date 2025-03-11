@@ -34,7 +34,7 @@ exports.createScrapRequest = async (req, res) => {
             }
         });
 
-        res.status(201).json({ message: 'Scrap request created successfully', scrapRequest });
+        res.status(201).json({ success: true, message: 'Scrap request created successfully', scrapRequest });
     } catch (error) {
         console.error('error', error);
         res.status(500).json({ error: 'Failed to create scrap request', details: error.message });
@@ -77,15 +77,20 @@ exports.findNearbyRequests = async (req, res) => {
 };
 
 
-// List Scrap Requests
+// Get Scrap Requests (Exclude Accepted/Completed)
 exports.getScrapRequests = async (req, res) => {
     try {
-        const scrapRequests = await ScrapRequest.find().populate('userId', 'name email');
-        res.status(200).json(scrapRequests);
+        const scrapRequests = await ScrapRequest.find({
+            status: { $nin: ['accepted', 'completed'] } // Exclude these statuses
+        });
+
+        res.status(200).json({ success: true, scrapRequests });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch scrap requests', details: error.message });
+        console.error('Error fetching scrap requests:', error);
+        res.status(500).json({ error: 'Failed to fetch scrap requests' });
     }
 };
+
 
 // Update Scrap Request Status
 exports.updateScrapRequestStatus = async (req, res) => {
