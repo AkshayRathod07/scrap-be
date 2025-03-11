@@ -12,15 +12,17 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}));
+
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/scrap-requests', require('./routes/scrapRequestRoutes'));
 app.use('/api/pickups', require('./routes/pickupRoutes'));
 
-app.use(fileUpload({
-    useTempFiles: true,
-    tempFileDir: '/tmp/'
-}));
+
 
 // Test API route
 app.get('/', (req, res) => {

@@ -1,9 +1,6 @@
 const ScrapRequest = require('../models/ScrapRequest');
 const cloudinary = require('../config/cloudinary');
 
-
-
-
 // Create Scrap Request with Cloudinary Image Upload
 exports.createScrapRequest = async (req, res) => {
     const { quantity, scrapType, scrapName } = req.body;
@@ -21,7 +18,6 @@ exports.createScrapRequest = async (req, res) => {
             resource_type: 'image'
         });
 
-        console.log('Cloudinary Upload Result:', result);
 
         const scrapRequest = await ScrapRequest.create({
             userId: req.user.id,
@@ -33,6 +29,7 @@ exports.createScrapRequest = async (req, res) => {
 
         res.status(201).json({ message: 'Scrap request created successfully', scrapRequest });
     } catch (error) {
+        console.error('Cloudinary Error:', error); // Detailed error log
         res.status(500).json({ error: 'Failed to create scrap request', details: error.message });
     }
 };
