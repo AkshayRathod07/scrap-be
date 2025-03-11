@@ -1,5 +1,5 @@
 const express = require('express');
-const { createScrapRequest, getScrapRequests, updateScrapRequestStatus, upload } = require('../controllers/scrapRequestController');
+const { createScrapRequest, getScrapRequests, updateScrapRequestStatus, upload, findNearbyRequests } = require('../controllers/scrapRequestController');
 const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -7,5 +7,7 @@ const router = express.Router();
 router.post('/', protect, createScrapRequest); // Photo upload
 router.get('/', protect, getScrapRequests);
 router.patch('/:id/status', protect, updateScrapRequestStatus);
+router.get('/nearby', protect, findNearbyRequests);
+
 
 module.exports = router;

@@ -4,13 +4,23 @@ const connectDB = require('./config/db');
 const http = require('http');
 const { Server } = require('socket.io');
 const fileUpload = require('express-fileupload');
+const cors = require('cors');
 
 dotenv.config();
 connectDB();
 
 const app = express();
+
+// Allow requests from your frontend's URL
+app.use(cors({
+    origin: 'http://localhost:3000',  // Frontend URL during development
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true // If you need to include cookies or authentication headers
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+
 
 app.use(fileUpload({
     useTempFiles: true,
