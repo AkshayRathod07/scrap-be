@@ -43,13 +43,13 @@ exports.login = async (req, res) => {
 };
 
 // Get User Profile using JWT token (Protected Route)
-// exports.getUserProfile = async (req, res) => {
-//     try {
-//         const user = await User.findById(req.user.id).select('-password');
-//         res.status(200).json(user);
-//     }
-//     catch (error) {
-//         res.status(500).json({ error: 'Failed to fetch user profile' });
-//     }
-// }
+exports.getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to fetch user profile' });
+    }
+}
 

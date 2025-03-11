@@ -42,9 +42,9 @@ exports.createScrapRequest = async (req, res) => {
 };
 
 
-// Find Nearby Scrap Requests
+// Find Nearby Scrap Requests (Exclude Accepted/Completed)
 exports.findNearbyRequests = async (req, res) => {
-    const { latitude, longitude, radius } = req.query; // Radius in meters
+    const { latitude, longitude, radius } = req.query;
 
     // Ensure values are numbers
     const lat = parseFloat(latitude);
@@ -52,7 +52,6 @@ exports.findNearbyRequests = async (req, res) => {
     const maxDistance = parseInt(radius);
 
     console.log('lat', lat, 'lng', lng, 'maxDistance', maxDistance);
-
 
     // Validate values
     if (isNaN(lat) || isNaN(lng) || isNaN(maxDistance)) {
@@ -63,10 +62,11 @@ exports.findNearbyRequests = async (req, res) => {
         const scrapRequests = await ScrapRequest.find({
             location: {
                 $near: {
-                    $geometry: { type: 'Point', coordinates: [lng, lat] }, // GeoJSON requires [lng, lat]
+                    $geometry: { type: 'Point', coordinates: [lng, lat] },
                     $maxDistance: maxDistance
                 }
-            }
+            },
+            status: { $nin: ['accepted', 'completed'] } // Exclude these statuses
         }).populate('userId', 'name email');
 
         res.status(200).json(scrapRequests);
@@ -75,6 +75,7 @@ exports.findNearbyRequests = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch nearby scrap requests', details: error.message });
     }
 };
+
 
 
 // Get Scrap Requests (Exclude Accepted/Completed)
@@ -105,6 +106,17 @@ exports.updateScrapRequestStatus = async (req, res) => {
         res.status(200).json({ message: 'Status updated successfully', scrapRequest });
     } catch (error) {
         res.status(500).json({ error: 'Failed to update status', details: error.message });
+    }
+};
+
+// Get User Scrap Requests
+exports.getUserScrapRequests = async (req, res) => {
+    try {
+        const scrapRequests = await ScrapRequest.find({ userId: req.user.id });
+        res.status(200).json(scrapRequests);
+    } catch (error) {
+        console.error('Error fetching user scrap requests:', error);
+        res.status(500).json({ error: 'Failed to fetch user scrap requests' });
     }
 };
 
