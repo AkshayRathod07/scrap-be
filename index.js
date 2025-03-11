@@ -16,6 +16,11 @@ app.use('/api/scrap-requests', require('./routes/scrapRequestRoutes'));
 app.use('/api/pickups', require('./routes/pickupRoutes'));
 
 
+// server is working api 
+app.get('/', (req, res) => {
+    res.send('Scrap Collector API is running...');
+});
+
 const io = new Server(server, {
     cors: {
         origin: '*', // Change this for production
