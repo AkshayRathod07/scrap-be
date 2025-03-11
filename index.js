@@ -8,6 +8,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 const server = http.createServer(app);
 app.use(express.json());
 
