@@ -4,7 +4,7 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.post('/', protect, upload.single('image'), createScrapRequest); // Photo upload
+router.post('/', protect, createScrapRequest); // Photo upload
 router.get('/', protect, getScrapRequests);
 router.patch('/:id/status', protect, updateScrapRequestStatus);
 

@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const http = require('http');
 const { Server } = require('socket.io');
+const fileUpload = require('express-fileupload');
 dotenv.config();
 connectDB();
 
@@ -15,6 +16,10 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/scrap-requests', require('./routes/scrapRequestRoutes'));
 app.use('/api/pickups', require('./routes/pickupRoutes'));
 
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}));
 
 // server is working api 
 app.get('/', (req, res) => {

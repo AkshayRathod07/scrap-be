@@ -1,30 +1,31 @@
 const ScrapRequest = require('../models/ScrapRequest');
-const multer = require('multer');
+const cloudinary = require('../config/cloudinary');
 
-// Multer Config for Image Upload
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
-});
-const upload = multer({ storage });
 
-// Create Scrap Request with Image Upload
+
+
+// Create Scrap Request with Cloudinary Image Upload
 exports.createScrapRequest = async (req, res) => {
     const { quantity, scrapType, scrapName } = req.body;
-    const image = req.file?.path; // Corrected image handling
+    const image = req.files?.image; // Using express-fileupload
+    console.log('image', image);
 
     if (!image) {
         return res.status(400).json({ error: 'Image is required' });
     }
 
-    if (!scrapType || !scrapName) {
-        return res.status(400).json({ error: 'Scrap type and scrap name are required' });
-    }
-
     try {
+        // Upload image to Cloudinary
+        const result = await cloudinary.uploader.upload(image.tempFilePath, {
+            folder: 'scrapEase/uploads',
+            resource_type: 'image'
+        });
+
+        console.log('Cloudinary Upload Result:', result);
+
         const scrapRequest = await ScrapRequest.create({
             userId: req.user.id,
-            image,
+            image: result.secure_url,  // Cloudinary's secure URL
             scrapType,
             scrapName,
             quantity
@@ -62,4 +63,3 @@ exports.updateScrapRequestStatus = async (req, res) => {
     }
 };
 
-module.exports.upload = upload;
