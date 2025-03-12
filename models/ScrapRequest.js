@@ -5,7 +5,6 @@ const scrapRequestSchema = new mongoose.Schema({
     image: { type: String, required: true },
     scrapType: {
         type: String,
-        enum: ['Paper', 'Plastic', 'Metal', 'E-Waste', 'Glass', 'Other'],
         required: true
     },
     scrapName: { type: String, required: true },
